@@ -86,6 +86,10 @@ Add this into your .bashrc file to export this variable automatically when you l
 `echo DISPLAY=<YOUR IP HERE>:0 >> ~/.bashrc`  
 Making sure again to substitute your host PC's IP address.
 
+Your Host PC might not have a static local IPV4 address. So if this ever changes, run "ipconfig" on Windows again and edit your bashrc file accordingly. Run:  
+`nano ~/.bashrc`  
+Scroll to the bottom and edit your IP address.
+
 That's it! Now we can test it. Install a web browser of your choice from the bash command line. To install Firefox run:  
 `sudo apt install firefox-esr`  
 When it has finished installing run the command to launch the browser. To launch Firefox run:  
@@ -142,7 +146,8 @@ You can also update the name to "Kali" like I have.
 ### Configure OpenSSH in Kali
 
 In your Kali bash shell reinstall OpenSSH by:  
-`sudo dpkg-reconfigure openssh-server`
+`sudo apt autoremove openssh-server`  
+`sudo apt install openssh-server`
 
 Edit the “/etc/ssh/sshd_config” configuration file:  
 `sudo nano /etc/ssh/sshd_config`
@@ -177,12 +182,15 @@ In the Kali bash run:
 WSL2 changed the way some things worked in the backend. Now to access tour WSL installation over the network we need to forward applicable packets to WSL. For this create a new NETSH rule.
 
 In your Kali bash terminal get the WSL IPV4 address, run:  
-`hostname -I | awk '{print $1}' | awk '{printf "%s:3000", $0}'`  
+`hostname -I`  
 Take note of this address.
 
 Open PowerShell as Administrator and run:  
 `netsh interface portproxy add v4tov4 listenport=2222 listenaddress=0.0.0.0 connectport=2222 connectaddress=<WSL IPV4 ADDRESS>`  
 Make sure to substitute in your WSL IP address.
+
+If you ever need to remove this rule, open PowerShell as Administrator and run:  
+`netsh interface portproxy delete v4tov4 listenport=2222 listenaddress=0.0.0.0`
 
 ### Test the connection
 
